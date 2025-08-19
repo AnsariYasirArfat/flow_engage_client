@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useFlowPanels } from '@/hooks/useFlowPanels';
+import { MessageNodeData } from '../nodes/MessageNode';
 
 const SettingsPanel: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -28,8 +29,7 @@ const SettingsPanel: React.FC = () => {
     return null;
   }
 
-  // Safely extract text value with proper typing
-  const textValue = (selectedNode.data as { text?: string })?.text || '';
+  const textValue = (selectedNode.data as MessageNodeData)?.text || '';
 
   return (
     <section className="p-6" aria-label="Node Settings">

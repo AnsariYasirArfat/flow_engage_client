@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef } from "react";
 import {
   addEdge,
   useNodesState,
@@ -11,9 +11,9 @@ import {
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
-} from '@xyflow/react';
-import { useAppDispatch } from '@/store/hook';
-import { setSelectedNode } from '@/store/reducers/flowSlice';
+} from "@xyflow/react";
+import { useAppDispatch } from "@/store/hook";
+import { setSelectedNode } from "@/store/reducers/flowSlice";
 
 export const useFlowCanvas = () => {
   const dispatch = useAppDispatch();
@@ -27,12 +27,18 @@ export const useFlowCanvas = () => {
   const handleNodesChange: OnNodesChange = useCallback(
     (changes) => {
       onNodesChange(changes);
-     
+      console.log("Node Changes: ", changes);
+
       // Sync selection to Redux
-      const selectedChange = changes.find(change => change.type === 'select');
-      if (selectedChange && 'selected' in selectedChange) {
-        if (selectedChange.selected) {
-          dispatch(setSelectedNode(selectedChange.id));
+      const selectedChanges = changes.filter(
+        (change) => change.type === "select"
+      );
+      if (selectedChanges.length) {
+        console.log("selected node: ", selectedChanges);
+        const selectedNode = selectedChanges.find((node) => node.selected);
+        console.log("selected node: ", selectedNode)
+        if (selectedNode) {
+          dispatch(setSelectedNode(selectedNode.id));
         } else {
           dispatch(setSelectedNode(null));
         }
@@ -57,7 +63,7 @@ export const useFlowCanvas = () => {
           id: `e${connection.source}-${connection.target}`,
           source: connection.source,
           target: connection.target,
-          type: 'smoothstep',
+          type: "smoothstep",
         };
         setEdges((eds) => addEdge(newEdge, eds));
       }
@@ -68,7 +74,7 @@ export const useFlowCanvas = () => {
   // Handle drag and drop
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
@@ -78,7 +84,7 @@ export const useFlowCanvas = () => {
       if (!reactFlowWrapper.current) return;
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const data = event.dataTransfer.getData('application/reactflow');
+      const data = event.dataTransfer.getData("application/reactflow");
 
       if (!data) return;
 
@@ -105,7 +111,7 @@ export const useFlowCanvas = () => {
     nodes,
     edges,
     reactFlowWrapper,
-    
+
     // Event handlers
     handleNodesChange,
     handleEdgesChange,

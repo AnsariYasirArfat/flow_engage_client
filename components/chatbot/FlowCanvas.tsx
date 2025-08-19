@@ -3,8 +3,8 @@
 import React from 'react';
 import { NodeTypes, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import NodeFactory from './nodes/NodeFactory';
 import { useFlowCanvas } from '@/hooks/useFlowCanvas';
+import MessageNode from './nodes/MessageNode';
 
 const FlowCanvas: React.FC = () => {
   const {
@@ -20,7 +20,7 @@ const FlowCanvas: React.FC = () => {
 
   // Define node types for React Flow
 const nodeTypes: NodeTypes = {
-  message: NodeFactory,
+  message: MessageNode,
 };
 
   return (
