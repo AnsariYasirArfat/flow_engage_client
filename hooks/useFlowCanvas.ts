@@ -58,6 +58,31 @@ export const useFlowCanvas = () => {
     [onEdgesChange]
   );
 
+  function pathExistsChain(
+    start: string,
+    goal: string,
+    edgesList: Edge[]
+  ): boolean {
+    const singleTarget = new Map<string, string>();
+    for (const e of edgesList) {
+      singleTarget.set(e.source, e.target);
+    }
+
+    let current = start;
+    const visited = new Set<string>();
+    while (current) {
+      if (visited.has(current)) break;
+      visited.add(current);
+
+      const next = singleTarget.get(current);
+      if (!next) break;
+      if (next === goal) return true;
+      current = next;
+    }
+
+    return false;
+  }
+
   // Handle new connections
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
@@ -71,17 +96,18 @@ export const useFlowCanvas = () => {
           );
           return;
         }
-
-        const isCircular = edges.find(
-          (edge) =>
-            edge.source === connection.target &&
-            edge.target === connection.source
+        const createsCycle = pathExistsChain(
+          connection.target,
+          connection.source,
+          edges
         );
-        console.log("is circular: ", isCircular);
-        if (isCircular) {
-          toast.error("Circular connections are not allowed.");
+        if (createsCycle) {
+          toast.error(
+            "Loops are not allowed — this would create a circular flow."
+          );
           return;
         }
+
         setEdges((eds) => addEdge(connection, eds));
       }
     },
