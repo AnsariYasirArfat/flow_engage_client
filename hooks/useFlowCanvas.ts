@@ -14,6 +14,7 @@ import {
 } from "@xyflow/react";
 import { useAppDispatch } from "@/store/hook";
 import { setSelectedNode } from "@/store/reducers/flowSlice";
+import { toast } from "sonner";
 
 export const useFlowCanvas = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,8 @@ export const useFlowCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
+  console.log("Edges: ", edges);
+  console.log("nodes: ", nodes);
   // Handle node changes
   const handleNodesChange: OnNodesChange = useCallback(
     (changes) => {
@@ -36,7 +39,7 @@ export const useFlowCanvas = () => {
       if (selectedChanges.length) {
         console.log("selected node: ", selectedChanges);
         const selectedNode = selectedChanges.find((node) => node.selected);
-        console.log("selected node: ", selectedNode)
+        console.log("selected node: ", selectedNode);
         if (selectedNode) {
           dispatch(setSelectedNode(selectedNode.id));
         } else {
@@ -59,16 +62,30 @@ export const useFlowCanvas = () => {
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
       if (connection.source && connection.target) {
-        const newEdge: Edge = {
-          id: `e${connection.source}-${connection.target}`,
-          source: connection.source,
-          target: connection.target,
-          type: "smoothstep",
-        };
-        setEdges((eds) => addEdge(newEdge, eds));
+        const isSourceConnected = edges.find(
+          (edge) => edge.source === connection.source
+        );
+        if (isSourceConnected) {
+          toast.error(
+            "This message is already connected. Please choose another."
+          );
+          return;
+        }
+
+        const isCircular = edges.find(
+          (edge) =>
+            edge.source === connection.target &&
+            edge.target === connection.source
+        );
+        console.log("is circular: ", isCircular);
+        if (isCircular) {
+          toast.error("Circular connections are not allowed.");
+          return;
+        }
+        setEdges((eds) => addEdge(connection, eds));
       }
     },
-    [setEdges]
+    [edges, setEdges]
   );
 
   // Handle drag and drop
