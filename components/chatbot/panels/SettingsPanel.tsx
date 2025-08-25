@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useAppDispatch } from '@/store/hook';
 import { setSelectedNode } from '@/store/reducers/flowSlice';
 import { ArrowLeft } from 'lucide-react';
@@ -8,18 +8,39 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useFlowPanels } from '@/hooks/useFlowPanels';
+import { useDebounce } from '@/hooks/useDebounce';
 import { MessageNodeData } from '../nodes/MessageNode';
 
 const SettingsPanel: React.FC = () => {
   const dispatch = useAppDispatch();
   const { selectedNodeId, selectedNode, updateNodeData } = useFlowPanels();
+  
+  // Local state for textarea value
+  const [localText, setLocalText] = useState('');
+  
+  // Debounced value that will trigger the actual update
+  const debouncedText = useDebounce(localText, 300);
+
+  // Update local state when selected node changes
+  useEffect(() => {
+    if (selectedNode) {
+      const textValue = (selectedNode.data as MessageNodeData)?.text || '';
+      setLocalText(textValue);
+    }
+  }, [selectedNode]);
+
+  // Update node data when debounced value changes
+  useEffect(() => {
+    if (selectedNodeId && debouncedText !== undefined) {
+      console.log('Updating node with debounced text:', debouncedText);
+      updateNodeData(selectedNodeId, { text: debouncedText });
+    }
+  }, [debouncedText, selectedNodeId, updateNodeData]);
 
   const handleTextChange = useCallback((text: string) => {
-    if (selectedNodeId) {
-      console.log('Updating text:', text); // Debug log
-      updateNodeData(selectedNodeId, { text });
-    }
-  }, [selectedNodeId, updateNodeData]);
+    console.log('Text changed to:', text);
+    setLocalText(text);
+  }, []);
 
   const handleBackClick = () => {
     dispatch(setSelectedNode(null));
@@ -28,8 +49,6 @@ const SettingsPanel: React.FC = () => {
   if (!selectedNode) {
     return null;
   }
-
-  const textValue = (selectedNode.data as MessageNodeData)?.text || '';
 
   return (
     <section className="p-6" aria-label="Node Settings">
@@ -53,7 +72,7 @@ const SettingsPanel: React.FC = () => {
           <Label htmlFor="message-text">Message Text</Label>
           <Textarea
             id="message-text"
-            value={textValue}
+            value={localText}
             onChange={(e) => handleTextChange(e.target.value)}
             placeholder="Enter your message..."
             className="min-h-[120px] resize-none"

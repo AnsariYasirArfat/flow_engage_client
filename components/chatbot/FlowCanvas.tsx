@@ -5,6 +5,7 @@ import { NodeTypes, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useFlowCanvas } from '@/hooks/useFlowCanvas';
 import MessageNode from './nodes/MessageNode';
+import { nodeTypes } from './nodes/NodeFactory';
 
 const FlowCanvas: React.FC = () => {
   const {
@@ -18,10 +19,6 @@ const FlowCanvas: React.FC = () => {
     onDrop,
   } = useFlowCanvas();
 
-  // Define node types for React Flow
-const nodeTypes: NodeTypes = {
-  message: MessageNode,
-};
 
   return (
     <div ref={reactFlowWrapper} className="w-full h-full">
