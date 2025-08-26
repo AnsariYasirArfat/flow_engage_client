@@ -24,22 +24,22 @@ export const useFlowCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  console.log("Edges: ", edges);
-  console.log("nodes: ", nodes);
+  // console.log("Edges: ", edges);
+  // console.log("nodes: ", nodes);
   // Handle node changes
   const handleNodesChange: OnNodesChange = useCallback(
     (changes) => {
       onNodesChange(changes);
-      console.log("Node Changes: ", changes);
+      // console.log("Node Changes: ", changes);
 
       // Sync selection to Redux
       const selectedChanges = changes.filter(
         (change) => change.type === "select"
       );
       if (selectedChanges.length) {
-        console.log("selected node: ", selectedChanges);
+        // console.log("selected node: ", selectedChanges);
         const selectedNode = selectedChanges.find((node) => node.selected);
-        console.log("selected node: ", selectedNode);
+        // console.log("selected node: ", selectedNode);
         if (selectedNode) {
           dispatch(setSelectedNode(selectedNode.id));
         } else {
@@ -87,6 +87,14 @@ export const useFlowCanvas = () => {
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
       if (connection.source && connection.target) {
+        
+         // 1. prevent self-connection
+        if (connection.source === connection.target) {
+          toast.error("A message cannot connect to itself.");
+          return;
+        }
+
+        // 2. prevent multiple outgoing from same source
         const isSourceConnected = edges.find(
           (edge) => edge.source === connection.source
         );
@@ -96,6 +104,8 @@ export const useFlowCanvas = () => {
           );
           return;
         }
+
+        // 3. prevent cycles
         const createsCycle = pathExistsChain(
           connection.target,
           connection.source,

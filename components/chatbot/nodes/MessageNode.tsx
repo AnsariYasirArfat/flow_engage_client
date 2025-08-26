@@ -10,8 +10,9 @@ export type MessageNodeData = {
 };
 
 const MessageNode: React.FC<NodeProps<Node<MessageNodeData>>> = memo(
-  ({ data, selected }) => {
+  ({ data, selected, id }) => {
     const textValue = data?.text || "";
+    console.log("message node: ", data, id);
     return (
       <div
         className={`shadow-lg rounded-md bg-white border-2 overflow-hidden ${
@@ -32,7 +33,7 @@ const MessageNode: React.FC<NodeProps<Node<MessageNodeData>>> = memo(
           className="w-3 h-3 bg-custom-blue border-2 border-white"
         />
 
-        <div className="bg-custom-teal px-4 py-1 border-b border-gray-200 flex items-center gap-2 justify-between flex-wrap min-w-72">
+        <div className="bg-custom-teal px-4 py-1 border-b border-gray-200 flex items-center gap-2 justify-between flex-wrap min-w-72 ">
           <div className="flex items-center gap-1">
             <MessageCircleMore size={12} />
             <span className="text-sm font-bold text-gray-800">
@@ -52,8 +53,8 @@ const MessageNode: React.FC<NodeProps<Node<MessageNodeData>>> = memo(
         </div>
 
         {/* Node Content - White Background */}
-        <div className="px-4 py-3 bg-white">
-          <div className="text-sm text-gray-700 font-medium">
+        <div className="px-4 py-3 bg-white max-w-96">
+          <div className="text-sm text-gray-700 font-medium break-words whitespace-pre-wrap overflow-hidden">
             {textValue || "Text node"}
           </div>
         </div>

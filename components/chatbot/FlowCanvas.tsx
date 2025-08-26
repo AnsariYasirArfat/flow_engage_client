@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { NodeTypes, ReactFlow } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import { useFlowCanvas } from '@/hooks/useFlowCanvas';
-import MessageNode from './nodes/MessageNode';
-import { nodeTypes } from './nodes/NodeFactory';
+import React from "react";
+import { Controls, MiniMap, NodeTypes, ReactFlow } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useFlowCanvas } from "@/hooks/useFlowCanvas";
+import MessageNode from "./nodes/MessageNode";
+import { nodeTypes } from "./nodes/NodeFactory";
 
 const FlowCanvas: React.FC = () => {
   const {
@@ -18,7 +18,6 @@ const FlowCanvas: React.FC = () => {
     onDragOver,
     onDrop,
   } = useFlowCanvas();
-
 
   return (
     <div ref={reactFlowWrapper} className="w-full h-full">
@@ -34,7 +33,9 @@ const FlowCanvas: React.FC = () => {
         fitView
         attributionPosition="bottom-left"
         className="bg-gray-50"
-      />
+      >
+        <Controls />
+      </ReactFlow>
     </div>
   );
 };
