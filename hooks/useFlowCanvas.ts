@@ -24,22 +24,17 @@ export const useFlowCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  // console.log("Edges: ", edges);
-  // console.log("nodes: ", nodes);
+
   // Handle node changes
   const handleNodesChange: OnNodesChange = useCallback(
     (changes) => {
       onNodesChange(changes);
-      // console.log("Node Changes: ", changes);
-
       // Sync selection to Redux
       const selectedChanges = changes.filter(
         (change) => change.type === "select"
       );
       if (selectedChanges.length) {
-        // console.log("selected node: ", selectedChanges);
         const selectedNode = selectedChanges.find((node) => node.selected);
-        // console.log("selected node: ", selectedNode);
         if (selectedNode) {
           dispatch(setSelectedNode(selectedNode.id));
         } else {

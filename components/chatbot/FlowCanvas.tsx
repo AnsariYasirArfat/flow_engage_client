@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
-import { Controls, MiniMap, NodeTypes, ReactFlow } from "@xyflow/react";
+import { Controls, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useFlowCanvas } from "@/hooks/useFlowCanvas";
-import MessageNode from "./nodes/MessageNode";
 import { nodeTypes } from "./nodes/NodeFactory";
 
 const FlowCanvas: React.FC = () => {

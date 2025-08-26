@@ -23,34 +23,30 @@ const SettingsPanel: React.FC = () => {
 
   const CHARACTER_LIMIT = 1000;
 
-  console.log("MessageFIX localText: ", localText);
-  console.log("MessageFIX debouncedText: ", debouncedText);
-
   // Update local state when selected node changes
   useEffect(() => {
-    if (selectedNode) {
-      console.log("MessageFIX selectedNode: ", selectedNode);
+    if (selectedNode && selectedNodeId) {
       const textValue = (selectedNode.data as MessageNodeData)?.text || "";
-      console.log("MessageFIX message text: ", textValue);
       setLocalText(textValue);
-      
-        if (textRef.current) {
-          textRef.current.focus();
-        }
+
+      if (textRef.current) {
+        textRef.current.focus();
+      }
     }
   }, [selectedNodeId]);
 
   // Update node data when debounced value changes
   useEffect(() => {
-    console.log("MessageFIX  debounced");
-    if (selectedNodeId && debouncedText !== undefined) {
-      console.log("Updating node with debounced text:", debouncedText);
+    if (
+      selectedNodeId &&
+      debouncedText &&
+      debouncedText !== selectedNode?.data.text
+    ) {
       updateNodeData(selectedNodeId, { text: debouncedText });
     }
   }, [debouncedText]);
 
   const handleTextChange = useCallback((text: string) => {
-    console.log("MessageFIX Text changed to:", text);
     // Limit text to CHARACTER_LIMIT characters
     if (text.length <= CHARACTER_LIMIT) {
       setLocalText(text);
@@ -91,7 +87,10 @@ const SettingsPanel: React.FC = () => {
         onSubmit={(e) => e.preventDefault()}
       >
         <fieldset className="flex-1 flex flex-col space-y-2 min-h-0">
-          <Label htmlFor="message-text" className="text-sm font-medium text-gray-700 mb-2">
+          <Label
+            htmlFor="message-text"
+            className="text-sm font-medium text-gray-700 mb-2"
+          >
             Message Text
           </Label>
           <div className="flex-1 flex flex-col min-h-0">

@@ -43,7 +43,6 @@ const Header: React.FC = () => {
        Flow Saved!
       </div>
     ));
-    console.log("handle save clicked!");
   };
 
   return (

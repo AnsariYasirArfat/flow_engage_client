@@ -4,15 +4,15 @@ import React, { memo } from "react";
 import { Handle, Position, NodeProps, Node } from "@xyflow/react";
 import { MessageCircleMore } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export type MessageNodeData = {
   text: string;
 };
 
 const MessageNode: React.FC<NodeProps<Node<MessageNodeData>>> = memo(
-  ({ data, selected, id }) => {
+  ({ data, selected }) => {
     const textValue = data?.text || "";
-    console.log("message node: ", data, id);
     return (
       <div
         className={`shadow-lg rounded-md bg-white border-2 overflow-hidden ${
@@ -54,7 +54,12 @@ const MessageNode: React.FC<NodeProps<Node<MessageNodeData>>> = memo(
 
         {/* Node Content - White Background */}
         <div className="px-4 py-3 bg-white max-w-96">
-          <div className="text-sm text-gray-700 font-medium break-words whitespace-pre-wrap overflow-hidden">
+          <div
+            className={cn(
+              ` text-sm  font-medium break-words whitespace-pre-wrap overflow-hidden`,
+              textValue ? "text-gray-700" : "text-gray-400"
+            )}
+          >
             {textValue || "Text node"}
           </div>
         </div>
