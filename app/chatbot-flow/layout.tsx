@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { ReactFlowProvider } from '@xyflow/react';
 import Header from "@/components/chatbot/layout/Header";
